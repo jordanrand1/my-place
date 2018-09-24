@@ -26,44 +26,49 @@ class Posts extends React.Component {
 
   posts = () => {
     const { users } = this.props
-    let name = ''
-    return this.props.posts.map( post =>
-      <Feed.Event>
-        {
-          users.map( user => {
-          if (user.id === post.user_id) 
-            name = user.name   
-          })
-        }
-      <Feed.Label image='/images/avatar/small/joe.jpg' />
-      <Feed.Content>
-        <Feed.Summary>
-          {name} posted on his page
-          <Feed.Date>{ new Date(post.created_at).toLocaleTimeString() }</Feed.Date>
-        </Feed.Summary>
-        <Feed.Extra text>
-          { post.body }
-        </Feed.Extra>
-        <Feed.Meta>
-          <Feed.Like>
-            <Icon name='like' />
-            {Math.floor(Math.random() * 100)} Likes
-          </Feed.Like>
-        </Feed.Meta>
-      </Feed.Content>
-    </Feed.Event>
-    )
-  }
+
+    this.props.posts.map( post => {
+      let user_name = ''
+      let user_id = 0
+
+      users.map( user => {
+        if (user.id === post.user_id) 
+          user_name = user.name   
+          user_id = user.id
+      })
+    })
+
+      return(
+        <Feed.Event>
+          <Feed.Label/>
+          <Feed.Content>
+            <Feed.Summary>
+              <Link to={`/user/${user_id}`}>{user_name}</Link>
+              <Feed.Date>{ new Date(post.created_at).toLocaleTimeString() }</Feed.Date>
+            </Feed.Summary>
+            <Feed.Extra text>
+              { post.body }
+            </Feed.Extra>
+            <Feed.Meta>
+              <Feed.Like>
+                <Icon name='like' />
+                {post.likes} Likes
+              </Feed.Like>
+            </Feed.Meta>
+          </Feed.Content>
+        </Feed.Event>
+      )
+    }
 
   render() {
     return (
       <Container>
         <Header as="h3" textAlign="center">Posts</Header>
-          {this.posts()}
-        </Container>
-      )
-    }
+        {this.posts()}
+      </Container>
+    )
   }
+}
 
   const mapStateToProps = (state) => {
     return { users: state.users, posts: state.posts }
